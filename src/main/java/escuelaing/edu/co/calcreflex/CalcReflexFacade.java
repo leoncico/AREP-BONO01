@@ -62,11 +62,10 @@ public class CalcReflexFacade {
                         + "Content-Type: application/json\r\n"
                         + "\r\n"
                         + HttpConnection.getResponse("/compreflex?" + requestQuery.getQuery());
+
             } else {
                 outputLine = htmlClient();
             }
- 
-            //outputLine = htmlClient();
             out.println(outputLine);
             out.close();
             in.close();
@@ -92,7 +91,7 @@ public class CalcReflexFacade {
                 + "        <h1>Form with GET</h1>\n"
                 + "        <form action=\"/hello\">\n"
                 + "            <label for=\"name\">Name:</label><br>\n"
-                + "            <input type=\"text\" id=\"comando\" name=\"comando\" value=\"max(1.0, 2.0)\"><br><br>\n"
+                + "            <input type=\"text\" id=\"comando\" name=\"comando\" value=\"bbl(14.2,5.4,58.4,0.0,0.1,2,3)\"><br><br>\n"
                 + "            <input type=\"button\" value=\"Submit\" onclick=\"loadGetMsg()\">\n"
                 + "        </form> \n"
                 + "        <div id=\"getrespmsg\"></div>\n"

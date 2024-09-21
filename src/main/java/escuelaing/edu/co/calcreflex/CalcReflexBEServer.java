@@ -13,7 +13,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Objects;
+
+import com.google.gson.Gson;
  
 /**
 *
@@ -59,12 +60,43 @@ public class CalcReflexBEServer {
             }
  
             URI requestURL = getRequestURI(firstLine);
- 
+
             if (requestURL.getPath().startsWith("/compreflex")) {
+
+                String command = requestURL.getQuery().substring(8);
+
+                int startIndex = command.indexOf('(');
+                int endIndex = command.indexOf(')');
+                
+                String operation = command.substring(0, startIndex);
+
+                System.out.println(operation);
+
+                Double[] params = {};
+
+                if (startIndex != -1 && endIndex != -1) {
+                    // Obtener los parámetros (dentro de los paréntesis)
+                    String paramString = command.substring(startIndex + 1, endIndex);
+                    String[] paramStrings = paramString.split(","); // Separar los parámetros por comas
+                    
+                    // Convertir los parámetros a double[]
+                    params = new Double[paramStrings.length];
+                    for (int i = 0; i < paramStrings.length; i++) {
+                        params[i] = Double.parseDouble(paramStrings[i].trim());
+                    }
+                }
+                
+
+
                 outputLine = "HTTP/1.1 200 OK\r\n"
                         + "Content-Type: application/json\r\n"
                         + "\r\n"
-                        + "{\"name\":\"John\", \"age\":30, \"car\":null}";
+                        + responseParam(operation, params);
+
+                // outputLine = "HTTP/1.1 200 OK\r\n"
+                //         + "Content-Type: application/json\r\n"
+                //         + "\r\n"
+                //         + "{\"name\":\"John\", \"age\":30, \"car\":null}";
             } else {
                 outputLine = getDefaultResponse();
             }
@@ -78,6 +110,19 @@ public class CalcReflexBEServer {
  
     }
  
+    public static String responseParam(String command, Double[] params){
+
+        Gson gson = new Gson();
+        String response = "";
+
+        if(command.equals("bbl")){
+            Double[] result = bubbleSort(params);
+            response = gson.toJson(result);
+        }
+
+        return response;
+    }
+
     public static String getDefaultResponse() {
         String htmlcode
                 = "HTTP/1.1 200 OK\r\n"
@@ -132,7 +177,7 @@ public class CalcReflexBEServer {
         return "";
     }
     
-    static void bubbleSort(int[] arr) {
+    static Double[] bubbleSort(Double[] arr) {
         int n = arr.length;
         boolean swapped;
 
@@ -140,7 +185,7 @@ public class CalcReflexBEServer {
             swapped = false;
             for (int j = 0; j < n - i - 1; j++) {
                 if (arr[j] > arr[j + 1]) {
-                    int temp = arr[j];
+                    Double temp = arr[j];
                     arr[j] = arr[j + 1];
                     arr[j + 1] = temp;
                     swapped = true;
@@ -148,5 +193,7 @@ public class CalcReflexBEServer {
             }
             if (!swapped) break;
         }
+
+        return arr;
     }
 }
