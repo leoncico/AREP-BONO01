@@ -51,18 +51,21 @@ terminales
 ```
 mvn exec:java -Dexec.mainClass="escuelaing.edu.co.calcreflex.CalcReflexFacade"
 ```
-mvn exec:java -Dexec.mainClass="escuelaing.edu.co.calcreflex.CalcReflexBEServer"
+
 ```
-java -cp target/classes escuelaing.edu.co.calcreflex.CalcReflexFacade
+mvn exec:java -Dexec.mainClass="escuelaing.edu.co.calcreflex.CalcReflexBEServer"
 ```
 
 Finalmente ingresa a localhost:35000 y digita operaciones matematicas de la libreria Math
 
 * Para 0 parametros
+  
 ![](img/02.PNG)
 
 * Para 1 parametro
+  
 ![](img/03.PNG)
 
 * Para 2 parametros
+  
 ![](img/04.PNG)
