@@ -14,8 +14,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-
 import com.google.gson.Gson;
  
 /**
@@ -67,53 +65,44 @@ public class CalcReflexBEServer {
 
                 String command = requestURL.getQuery().substring(8);
 
-                int startIndex = command.indexOf('(');
-                int endIndex = command.indexOf(')');
-                
-                String operation = command.substring(0, startIndex);
-
                 Double[] params = {};
+                String operation = "";
 
-                if (startIndex != -1 && endIndex != -1) {
-                    String paramString = command.substring(startIndex + 1, endIndex);
-                    String[] paramStrings = paramString.split(","); 
-                    params = new Double[paramStrings.length];
+                if(command.contains("(")){
+                    int startIndex = command.indexOf('(');
+                    int endIndex = command.indexOf(')');
+                    
+                    operation = command.substring(0, startIndex);
 
-                    System.out.println(Arrays.toString(paramStrings));
-
-
-                    if(paramStrings.length > 0 && !paramStrings[0].trim().isEmpty()){
+                    if (startIndex != -1 && endIndex != -1) {
+                        String paramString = command.substring(startIndex + 1, endIndex);
+                        String[] paramStrings = paramString.split(","); 
+                        params = new Double[paramStrings.length];
                         for (int i = 0; i < paramStrings.length; i++) {
                             params[i] = Double.parseDouble(paramStrings[i].trim());
                         }
+
                     }
-                    else{
-                        params = new Double[0];
-                        operation = command.substring(0, command.length() - 2);
-                    }
-                    
+                }
+
+                else{
+                    operation = command;
                 }
 
                 outputLine = "HTTP/1.1 200 OK\r\n"
                         + "Content-Type: application/json\r\n"
                         + "\r\n"
                         + responseParam(operation, params);
-
-                // outputLine = "HTTP/1.1 200 OK\r\n"
-                //         + "Content-Type: application/json\r\n"
-                //         + "\r\n"
-                //         + "{\"name\":\"John\", \"age\":30, \"car\":null}";
-            } else {
+            } 
+            else {
                 outputLine = getDefaultResponse();
             }
- 
             out.println(outputLine);
             out.close();
             in.close();
             clientSocket.close();
         }
         serverSocket.close();
- 
     }
  
     public static String responseParam(String command, Double[] params) throws NoSuchMethodException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchFieldException{
@@ -122,11 +111,6 @@ public class CalcReflexBEServer {
         String response = "";
 
         Class c = Math.class;
-
-        
-
-        System.out.println(Arrays.toString(params));
-        System.out.println(command);
 
         if(command.equals("bbl")){
             Double[] result = bubbleSort(params);
@@ -197,23 +181,6 @@ public class CalcReflexBEServer {
     public static URI getRequestURI(String firstline) throws URISyntaxException {
         String ruri = firstline.split(" ")[1];
         return new URI(ruri);
-    }
- 
-    public static String computeMathCommand(String command) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException{
-        Class c = Math.class;
-        Class [] parametersTypes = {double.class};
-        Method m = c.getDeclaredMethod("abs", parametersTypes);
-        Object[] params = {-2,0};
-        String resp = m.invoke(null, (Object) params).toString();
-        return "";
-    }
-    
-    private static Double[] convertDoubles(String[] values){
-        Double[] params = new Double[values.length];
-        for (int i = 0; i < values.length; i++) {
-            params[i] = Double.parseDouble(values[i]);
-        }
-        return params;
     }
 
     static Double[] bubbleSort(Double[] arr) {
