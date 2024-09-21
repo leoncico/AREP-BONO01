@@ -42,9 +42,8 @@ public class HttpConnection {
                 response.append(inputLine);
             }
             in.close();
-
             responseStr = response.toString();
-            System.out.println(response.toString());
+            
         } else {
             System.out.println("GET request not worked");
         }
